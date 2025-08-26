@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { refresh } from "../../modules/auth/services/authService.js";
+import { refreshToken } from "../../modules/auth/services/authService.js";
 
 export const useAuthInit = () => {
     // const dispatch = useDispatch();
@@ -7,11 +7,11 @@ export const useAuthInit = () => {
     useEffect(() => {
         if (called.current) return; // ngăn gọi lần 2
         called.current = true;
-        refresh().then((data) => {
+        refreshToken().then((data) => {
             console.log(data);
         });
-        refresh().catch(() => {
-            console.log("Không thể refresh token, cần login lại");
+        refreshToken().catch(() => {
+            console.log("Refresh token failed");
         });
     }, []);
 };

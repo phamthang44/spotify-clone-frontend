@@ -1,9 +1,10 @@
-export default function Button({img, content, className, textClassName, onClick}) {
+export default function Button({divClass, icon, content, className, textClassName, onClick, classIcon, type, children}) {
     return(
-        <div className="relative">
-            <div className="absolute top-3 left-6">{img ? img : ""}</div>
-            <button onClick={onClick} className={className}>
+        <div className={divClass}>
+            <button onClick={onClick} className={className} type={type ? type : 'button'}>
+                <span className={classIcon}>{icon ? icon : ""}</span>
                 <span className={textClassName} >{content}</span>
+                {children ? children : null}
             </button>
         </div>
     );

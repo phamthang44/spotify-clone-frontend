@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Header from '../../app-header/components/Header.jsx'
+import Header from '../../header/components/Header.jsx'
 
 import {
     Play,

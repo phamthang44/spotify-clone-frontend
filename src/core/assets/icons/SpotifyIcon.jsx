@@ -1,9 +1,9 @@
-export default function SpotifyIcon() {
+export default function SpotifyIcon({className}) {
     return (
         <svg
             role="img"
             viewBox="0 0 24 24"
-            className="w-8 h-8"
+            className={className}
             aria-label="Spotify"
             aria-hidden="false"
             height="32"

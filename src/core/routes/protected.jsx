@@ -9,7 +9,7 @@ const protectedRoutes = [
         children: [
             { path: '/', element: <ProtectedRoute><HomePage></HomePage></ProtectedRoute> },
         ]
-    }
+    },
 ]
 
 export default protectedRoutes;

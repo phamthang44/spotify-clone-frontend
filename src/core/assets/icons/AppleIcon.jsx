@@ -1,4 +1,4 @@
-export default function AppleIcon() {
+export default function AppleIcon({className}) {
     return (
         <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -6,6 +6,7 @@ export default function AppleIcon() {
             width="23px"
             height="23px"
             fillRule="nonzero"
+            className={className}
         >
             <g
                 fill="#ffffff"

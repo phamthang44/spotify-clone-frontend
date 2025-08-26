@@ -1,22 +1,16 @@
 import api from "../../../core/services/axiosClient.js";
-import { store } from "../../../core/store/store.js";
-import { setCredentials, logout } from "../../../core/store/authSlice.js";
-
+import refreshApi from "../../../core/services/axiosClient.js";
 export const login = async (formData) => {
-    const res = await api.post("/users/login", formData);
+    const res = await api.post("/users/login", formData, { _skipGlobalErrorHandler: true });
     return res.data; // { accessToken, user, ... }
 };
 
-export const refresh = async () => {
-    try {
-        const res = await api.post("/users/refresh");
-        const newAccessToken = res.data.data.accessToken;
+export const refreshToken = async () => {
+    const res = await refreshApi.post("/users/refresh", null, { withCredentials: true, _notified: false, _skipGlobalErrorHandler: true });
+    return res.data;
+}
 
-        store.dispatch(setCredentials(newAccessToken));
-        return newAccessToken;
-    } catch (err) {
-        console.error("Refresh failed:", err);
-        store.dispatch(logout());
-        return null;
-    }
-};
+export const logoutClient = async () => {
+    const res = await api.post("/users/logout", null, { withCredentials: true });
+    return res.data;
+}
