@@ -1,10 +1,42 @@
 import SpotifyIcon from "../../../core/assets/icons/SpotifyIcon.jsx";
-import SignupForm from "../components/SignupForm.jsx";
+import SignupForm from "../components/Signup/SignupForm.jsx";
 import { useState } from "react";
-import OAuthSection from "../components/OAuthSection.jsx";
+import OAuthSection from "../components/Common/OAuthSection.jsx";
 import {Link} from "react-router-dom";
+import {setOAuthSignupData} from "../../../core/store/oauthSlice.js";
+import { useDispatch } from "react-redux";
+import ProgressBar from "../components/Common/ProgressBar.jsx";
+
 function SignupPage() {
     const [step, setStep] = useState(0);
+    const dispatch = useDispatch();
+
+    const handleGoogleLogin = () => {
+        const popup = window.open(
+            "http://localhost:8080/api/v1/auth/oauth2/google",
+            "_blank",
+            "width=500,height=600"
+        );
+
+        const listener = (event) => {
+            if (event.origin !== "http://localhost:8080") return;
+
+            const { email, name, status, isExistingUser, requiredFields } = event.data.data;
+            dispatch(setOAuthSignupData({ email, name, requiredFields }));
+
+            if (!isExistingUser) {
+                console.log(email);
+                setStep(1);
+            } else {
+                console.log("Existing user, redirect dashboard");
+            }
+
+            window.removeEventListener("message", listener); // remove listener sau khi nhận
+        };
+
+        window.addEventListener("message", listener);
+    };
+
 
     return (
         <div className="w-full min-h-screen bg-[#121212]">
@@ -18,20 +50,19 @@ function SignupPage() {
                     <div className="w-1/4 px-12">
                         {step === 0 ?
                             <h1 className="text-center text-[48px] text-white font-bold font-poppins text-balance">Sign up to start listening</h1>
-                         : null}
+                         : <ProgressBar totalSteps={3} step={step} />}
                         <SignupForm step={step} setStep={setStep} />
                     </div>
                     <div className="w-1/5 h-50 py-2 mt-5">
-                        <OAuthSection />
+                        {step > 0 ? null : <OAuthSection onClick={handleGoogleLogin} />}
                     </div>
-                    <div className="flex gap-2 justify-center items-center">
+                    {step > 0 ? null : <div className="flex gap-2 justify-center items-center">
                         <p className="font-semibold font-poppins text-[#b3b3b3]">Already have an account?</p>
                         <Link to="/login" className="text-white font-semibold font-poppins underline p-3">Log in here</Link>
-                    </div>
+                    </div>}
                 </div>
             </section>
         </div>
-
     );
 }
 

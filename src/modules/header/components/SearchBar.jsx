@@ -1,5 +1,5 @@
 import IconBrowse from "../../../core/assets/icons/IconBrowse.jsx";
-import Button from "../../auth/components/Button.jsx";
+import Button from "../../auth/components/Common/Button.jsx";
 import SearchIcon from "../../../core/assets/icons/SearchIcon.jsx";
 
 export default function SearchBar() {

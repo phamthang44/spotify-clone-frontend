@@ -1,9 +1,9 @@
-import Button from '../components/Button.jsx';
+import Button from '../components/Common/Button.jsx';
 import GoogleIcon from "../../../core/assets/icons/GoogleIcon.jsx";
 import AppleIcon from "../../../core/assets/icons/AppleIcon.jsx";
 import FacebookIcon from "../../../core/assets/icons/FacebookIcon.jsx";
 import { Link } from "react-router-dom";
-import LoginForm from "../components/LoginForm.jsx";
+import LoginForm from "../components/Login/LoginForm.jsx";
 import { useDispatch } from "react-redux";
 import * as authService from "../services/authService.js";
 import { setCredentials } from "../../../core/store/authSlice.js";
@@ -39,7 +39,7 @@ const classText = "mx-auto font-poppins font-bold text-white";
 
 function LoginPage() {
 
-    const href="";
+    const href= "";
 
     const { addToast } = useToast();
     const dispatch = useDispatch();

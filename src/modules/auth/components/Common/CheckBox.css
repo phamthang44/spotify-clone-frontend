@@ -1,0 +1,34 @@
+.check svg {
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 1.5;
+    fill: none;
+}
+
+/* Circle styles */
+.circle-unchecked {
+    stroke: #c8ccd4;
+    fill: none;
+    transition: all 0.3s ease;
+}
+
+.circle-checked {
+    stroke: #4caf50;     /* outline xanh lá */
+    fill: #4caf50;       /* fill xanh lá */
+    transition: all 0.3s ease;
+}
+
+/* Tick styles */
+.tick-unchecked {
+    stroke: black;
+    stroke-dasharray: 22;
+    stroke-dashoffset: 22;   /* ẩn tick */
+    transition: stroke-dashoffset 0.2s linear;
+}
+
+.tick-checked {
+    stroke: black;
+    stroke-dasharray: 22;
+    stroke-dashoffset: 0;    /* hiện tick */
+    transition: stroke-dashoffset 0.2s linear 0.15s;
+}

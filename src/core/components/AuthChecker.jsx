@@ -11,6 +11,7 @@ import { useLocation } from "react-router-dom";
 function AuthChecker({ children }) {
     const dispatch = useDispatch();
     const location = useLocation();
+    const navigate = useNavigate();
     const { accessToken } = useSelector((state) => state.auth);
     const [initDone, setInitDone] = useState(false); // kiểm soát chỉ gọi refresh 1 lần
     const calledRef = useRef(false);
@@ -28,6 +29,9 @@ function AuthChecker({ children }) {
             } catch (err) {
                 if (err.response?.data?.status === 401) {
                     addToast.error(format.formatMessageInvalidExpiredRefreshToken(err.response.data.message));
+                    navigate("/login");
+                } else if (err.response?.data?.status === 500) {
+                    navigate("/login");
                 }
                 dispatch(logout());
             } finally {
