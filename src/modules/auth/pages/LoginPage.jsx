@@ -11,7 +11,7 @@ import SpotifyIcon from "../../../core/assets/icons/SpotifyIcon.jsx";
 import { useToast } from '../../../core/contexts/ToastContext.jsx';
 import { useState } from "react";
 import { format } from "../../../core/components/utils/helper.js";
-import LinkButton from "../../../core/components/LinkButton.jsx";
+
 
 
 
@@ -39,11 +39,31 @@ const classText = "mx-auto font-poppins font-bold text-white";
 
 function LoginPage() {
 
-    const href= "";
     const navigate = useNavigate();
     const { addToast } = useToast();
     const dispatch = useDispatch();
     const [loading, setLoading] = useState(false);
+    const handleGoogleLogin = () => {
+        const popup = window.open(
+            "http://localhost:8080/api/v1/auth/oauth2/google",
+            "_blank",
+            "width=500,height=600"
+        );
+        const listener = (event) => {
+            if (event.origin !== "http://localhost:8080") return;
+            console.log(event.data);
+
+            if (event.data.status === 200 && event.data.message === "Login successful") {
+                dispatch(setCredentials({
+                    accessToken: event.data.data.accessToken
+                }))
+                navigate("/");
+            }
+            window.removeEventListener("message", listener); // remove listener sau khi nhận
+        };
+
+        window.addEventListener("message", listener);
+    };
     const handleLogin = async (formData, e) => {
         e.preventDefault();
         if (loading) return;
@@ -110,10 +130,10 @@ function LoginPage() {
                         <h1 className="font-poppins font-bold text-white text-3xl">Log in to Spotify</h1>
                     </div>
                     <div className="flex flex-col gap-3">
-                        <LinkButton href={href} className={classBtn}>
+                        <Button onClick={handleGoogleLogin} className={classBtn}>
                             <GoogleIcon altText="Google"/>
                             <span className={classText} >Continue with Google</span>
-                        </LinkButton>
+                        </Button>
                         {buttonsContent.map((item, index) => (
                             <Button className={classBtn} key={index} content={item.content} icon={item.icon} textClassName={classText}/>
                         ))}

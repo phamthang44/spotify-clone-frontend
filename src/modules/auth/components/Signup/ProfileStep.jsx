@@ -7,7 +7,7 @@ import InputGroup from "../Common/InputGroup.jsx";
 import { Controller, useFormContext } from "react-hook-form";
 import GenderRadioGroup from "../Common/GenderRadioGroup.jsx";
 
-export default function ProfileStep({step, prev, next}) {
+export default function ProfileStep({step, prev, next, oauthSignup}) {
 
     const {
         register,
@@ -38,6 +38,7 @@ export default function ProfileStep({step, prev, next}) {
                         id="name"
                         type="text"
                         placeholder="Enter your name"
+                        oauthSignup={oauthSignup}
                     />
                     <ShowErrorPart error={errors.name} divClass={"relative my-2"} />
                 </InputGroup>

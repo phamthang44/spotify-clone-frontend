@@ -3,18 +3,20 @@ import SignupForm from "../components/Signup/SignupForm.jsx";
 import { useState } from "react";
 import OAuthSection from "../components/Common/OAuthSection.jsx";
 import {Link} from "react-router-dom";
-import {setOAuthSignupData} from "../../../core/store/oauthSlice.js";
-import { useDispatch } from "react-redux";
+import {setOAuthSignupData, clearOAuthSignupData} from "../../../core/store/oauthSlice.js";
+import {useDispatch, useSelector} from "react-redux";
 import ProgressBar from "../components/Common/ProgressBar.jsx";
 import { useNavigate } from "react-router-dom";
-import {signup} from "../services/authService.js";
+import {completeSignup, signup} from "../services/authService.js";
 import { useToast } from "../../../core/contexts/ToastContext.jsx";
+import {setCredentials} from "../../../core/store/authSlice.js";
 
 function SignupPage() {
     const [step, setStep] = useState(0);
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const addToast = useToast();
+    const oauthData = useSelector(state => state.oauthSignup);
     const handleLocalSignup = async (data) => {
         const timeFormat = data?.dob.toISOString().split("T")[0]
         const payload = {
@@ -34,8 +36,14 @@ function SignupPage() {
 
         // 👉 gọi API signup(registerDto) ở đây
         try {
-            const response = await signup(registerDto);
+            let response;
+            if (oauthData.email || oauthData.name) {
+                response = await completeSignup(registerDto);
+            } else {
+                response = await signup(registerDto);
+            }
             console.log("Signup success:", response);
+            dispatch(clearOAuthSignupData())
             navigate("/login");
         } catch (err) {
             console.error("Signup failed:", err);
@@ -57,15 +65,21 @@ function SignupPage() {
 
         const listener = (event) => {
             if (event.origin !== "http://localhost:8080") return;
+            console.log(event.data);
 
-            const { email, name, status, isExistingUser, requiredFields } = event.data.data;
+            if (event.data.status === 200 && event.data.message === "Login successful") {
+                dispatch(setCredentials({
+                    accessToken: event.data.data.accessToken
+                }))
+                navigate("/");
+            }
+
+            const { email, name, requiredFields } = event.data.data;
             dispatch(setOAuthSignupData({ email, name, requiredFields }));
 
-            if (!isExistingUser) {
+            if (email) {
                 console.log(email);
                 setStep(1);
-            } else {
-                console.log("Existing user, redirect dashboard");
             }
 
             window.removeEventListener("message", listener); // remove listener sau khi nhận

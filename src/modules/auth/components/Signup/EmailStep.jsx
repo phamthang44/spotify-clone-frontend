@@ -4,7 +4,7 @@ import { useFormContext } from "react-hook-form";
 import InputSignup from "../Common/InputSignup.jsx";
 import ShowErrorPart from "../Common/ShowErrorPart.jsx";
 
-export default function EmailStep({next}) {
+export default function EmailStep({next, oAuthSignup}) {
 
     const {formState: { errors }, trigger } = useFormContext();
 
@@ -22,6 +22,7 @@ export default function EmailStep({next}) {
                     id="email"
                     type="text"
                     placeholder="Enter email address"
+                    oauthSignup={oAuthSignup}
                 />
                 <ShowErrorPart error={errors.email} divClass={"flex justify-center items-center mb-10 mt-3 relative"}/>
             </div>

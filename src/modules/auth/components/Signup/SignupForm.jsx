@@ -69,9 +69,9 @@ export default function SignupForm({step, setStep, onSubmit}) {
         <FormProvider {...methods}>
             <form onSubmit={methods.handleSubmit(onSubmit)}>
                 <div className="flex flex-col items-center gap-5 mt-10">
-                    {step === 0 && <EmailStep next={() => setStep(1)} />}
-                    {step === 1 && <PasswordStep next={() => setStep(2)} prev={() => setStep(0)} step={step}/>}
-                    {step === 2 && <ProfileStep next={() => setStep(3)} prev={() => setStep(1)} step={step} />}
+                    {step === 0 && <EmailStep next={() => setStep(1)} oAuthSignup={oauthData} />}
+                    {step === 1 && <PasswordStep next={() => setStep(2)} prev={() => setStep(0)} step={step} oAuthSignup={oauthData}/>}
+                    {step === 2 && <ProfileStep next={() => setStep(3)} prev={() => setStep(1)} step={step} oAuthSignup={oauthData}/>}
                     {step === 3 && <FinalStep prev={() => setStep(2)} step={step}/>}
                 </div>
             </form>

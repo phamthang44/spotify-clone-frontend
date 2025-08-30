@@ -8,7 +8,7 @@ import StepHeader from "./StepHeader.jsx";
 import AnimatedCheckbox from "../Common/AnimatedCheckbox.jsx";
 import { Eye, EyeOff } from "lucide-react";
 
-export default function PasswordStep({prev, next, step}) {
+export default function PasswordStep({prev, next, step, oauthSignup}) {
     const {  formState: { errors, touchedFields }, trigger, watch } = useFormContext();
     const password = watch("password");
     const textClass = "font-poppins text-white"
@@ -42,6 +42,7 @@ export default function PasswordStep({prev, next, step}) {
                         id="password"
                         type={showPassword ? "text" : "password"}
                         placeholder="Enter your password"
+                        oauthSignup={oauthSignup}
                     />
                     <button
                         type="button"
