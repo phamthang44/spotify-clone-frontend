@@ -1,5 +1,6 @@
 import axios from "axios";
 import {logout, setCredentials} from "../store/authSlice.js";
+import {setVerifyInformation} from "../store/verifySlice.js";
 import {store} from "../store/store.js";
 import toast from "react-hot-toast";
 
@@ -32,9 +33,27 @@ api.interceptors.response.use(
     response => response,
     async (error) => {
         const originalRequest = error.config;
+        if (import.meta.env.MODE === "development") {
+            if (error.response.status === 403 && error.response.data.message.includes("Email not verified")) {
+                const parts = error.response.data.message.split(": ");
+                const email = parts[1] || null;
+                store.dispatch(setVerifyInformation({
+                    email,
+                    message: error?.response?.data?.message,
+                }));
+                toast.error(error.response.data.message);
+            }
+
+            console.error(
+                `[API ${error.response?.status}]`,
+                error.response?.data?.message || error.message
+            );
+        }
         if (originalRequest._skipGlobalErrorHandler) {
             return Promise.reject(error);
         }
+
+        //handle refresh token
         if (error.response?.status === 401 && !originalRequest._retry && !originalRequest.url.includes("/refresh")) {
             originalRequest._retry = true;
             try {
@@ -45,24 +64,28 @@ api.interceptors.response.use(
 
                 originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
                 return api(originalRequest); // retry request gốc
-            } catch {
+            } catch (err) {
                 store.dispatch(logout());
                 if (!originalRequest._notified) {
                     originalRequest._notified = true;
                     // dùng toast hoặc alert
-                    toast.error("Session has been expired. Please login again.");
+                    if (err.status === 403) {
+                        //toast.error("Session has been expired. Please login again.");
+                    }
                 }
-                return Promise.reject(error);
+                toast.error("Session expired. Please login again.");
+                return Promise.reject(err);
             }
         }
 
         if ([401, 403].includes(error.response?.status)) {
             store.dispatch(logout());
-            if (!originalRequest._notified) {
-                originalRequest._notified = true;
-                toast.error("Session expired. Please login again.");
-            }
-            return Promise.reject(error);
+            toast.error("Session expired. Please login again.");
+        }
+
+        // --- Xử lý lỗi khác (404, 500) ---
+        if ([404, 500].includes(error.response?.status)) {
+            toast.error(error.response?.data?.message || "Something went wrong!");
         }
 
         return Promise.reject(error);

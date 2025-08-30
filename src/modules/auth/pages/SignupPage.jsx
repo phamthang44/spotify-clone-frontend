@@ -6,10 +6,47 @@ import {Link} from "react-router-dom";
 import {setOAuthSignupData} from "../../../core/store/oauthSlice.js";
 import { useDispatch } from "react-redux";
 import ProgressBar from "../components/Common/ProgressBar.jsx";
+import { useNavigate } from "react-router-dom";
+import {signup} from "../services/authService.js";
+import { useToast } from "../../../core/contexts/ToastContext.jsx";
 
 function SignupPage() {
     const [step, setStep] = useState(0);
     const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const addToast = useToast();
+    const handleLocalSignup = async (data) => {
+        const timeFormat = data?.dob.toISOString().split("T")[0]
+        const payload = {
+            ...data,
+            dob: timeFormat,
+        }
+
+        const registerDto = {
+            email: payload.email,
+            displayName: payload.name,
+            password: payload.password,
+            gender: payload.gender,
+            dateOfBirth: payload.dob
+        }
+
+        console.log("Final payload:", registerDto);
+
+        // 👉 gọi API signup(registerDto) ở đây
+        try {
+            const response = await signup(registerDto);
+            console.log("Signup success:", response);
+            navigate("/login");
+        } catch (err) {
+            console.error("Signup failed:", err);
+            const responseError = err.response.data;
+            if (err.status === 409) {
+                const conflictMessage = responseError.message;
+                addToast.error(conflictMessage)
+            }
+        }
+    };
+
 
     const handleGoogleLogin = () => {
         const popup = window.open(
@@ -39,28 +76,26 @@ function SignupPage() {
 
 
     return (
-        <div className="w-full min-h-screen bg-[#121212]">
+        <div className="w-full h-full bg-[#121212] flex flex-col flex-1">
             <header className="pt-8 pb-6">
                 <div className="flex justify-center items-center">
                     <SpotifyIcon className="w-10 h-10" />
                 </div>
             </header>
-            <section className="h-screen w-full flex">
-                <div className="w-full h-fit flex flex-col justify-center items-center">
-                    <div className="w-1/4 px-12">
-                        {step === 0 ?
-                            <h1 className="text-center text-[48px] text-white font-bold font-poppins text-balance">Sign up to start listening</h1>
-                         : <ProgressBar totalSteps={3} step={step} />}
-                        <SignupForm step={step} setStep={setStep} />
-                    </div>
-                    <div className="w-1/5 h-50 py-2 mt-5">
-                        {step > 0 ? null : <OAuthSection onClick={handleGoogleLogin} />}
-                    </div>
-                    {step > 0 ? null : <div className="flex gap-2 justify-center items-center">
-                        <p className="font-semibold font-poppins text-[#b3b3b3]">Already have an account?</p>
-                        <Link to="/login" className="text-white font-semibold font-poppins underline p-3">Log in here</Link>
-                    </div>}
+            <section className="flex flex-col justify-center items-center">
+                <div className="w-1/4 px-12 relative">
+                    {step === 0 ?
+                        <h1 className="text-center text-[48px] text-white font-bold font-poppins text-balance">Sign up to start listening</h1>
+                        : <ProgressBar totalSteps={3} step={step} />}
+                    <SignupForm step={step} setStep={setStep} onSubmit={handleLocalSignup} />
                 </div>
+                {step === 3 || step === 2 || step === 1 ? null : (<div className="w-1/5 h-50 py-2 mt-5">
+                    {step > 0 ? null : <OAuthSection onClick={handleGoogleLogin} />}
+                </div>)}
+                {step > 0 ? null : <div className="flex gap-2 justify-center items-center">
+                    <p className="font-semibold font-poppins text-[#b3b3b3]">Already have an account?</p>
+                    <Link to="/login" className="text-white font-semibold font-poppins underline p-3">Log in here</Link>
+                </div>}
             </section>
         </div>
     );

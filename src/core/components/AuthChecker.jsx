@@ -17,21 +17,31 @@ function AuthChecker({ children }) {
     const calledRef = useRef(false);
     const { addToast } = useToast();
     const isAuthPage = location.pathname.includes("/signup") || location.pathname.includes("/login");
+    const isVerifying = location.pathname.includes("/verify");
     useEffect(() => {
         const initAuth = async () => {
             try {
-                const res = await refreshToken();
-                dispatch(setCredentials({
-                    accessToken: res.accessToken,
-                    isAuthenticated: true,
-                    isLoading: false,
-                }));
+                if (!isVerifying) {
+                    const res = await refreshToken();
+                    dispatch(setCredentials({
+                        accessToken: res.accessToken,
+                        isAuthenticated: true,
+                        isLoading: false,
+                    }));
+                }
             } catch (err) {
                 if (err.response?.data?.status === 401) {
-                    addToast.error(format.formatMessageInvalidExpiredRefreshToken(err.response.data.message));
-                    navigate("/login");
+                    if (err.response?.data?.message.includes("No refresh token provided")) {
+                        navigate("/login");
+                    } else if (err.response?.data?.message.includes("Invalid or revoked refresh token")) {
+                        navigate("/login");
+                    } else if (err.response?.data?.message.includes("verification")) {
+                        navigate("/verify");
+                    }
                 } else if (err.response?.data?.status === 500) {
                     navigate("/login");
+                } else if (err.response?.data?.status === 403 && err.response?.data?.message.includes("not verified")) {
+                    navigate("/verify")
                 }
                 dispatch(logout());
             } finally {

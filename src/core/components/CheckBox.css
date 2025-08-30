@@ -1,0 +1,51 @@
+.check svg {
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 2;
+    fill: none;
+}
+
+/* ---- Checkbox vuông ---- */
+.checkbox-box {
+    stroke: #c8ccd4;
+    fill: none;
+    transition: all 0.3s ease;
+}
+
+.checkbox-box-checked {
+    stroke: #4caf50;     /* outline xanh lá */
+    fill: #4caf50;
+    transition: all 0.3s ease;
+}
+
+.tick-unchecked {
+    stroke: #c8ccd4;
+    stroke-dasharray: 22;
+    stroke-dashoffset: 22;   /* ẩn tick */
+    transition: stroke-dashoffset 0.2s linear;
+}
+
+.tick-checked {
+    stroke: white;
+    stroke-dasharray: 22;
+    stroke-dashoffset: 0;    /* hiện tick */
+    transition: stroke-dashoffset 0.2s linear 0.15s;
+}
+
+/* ---- Radio tròn ---- */
+.radio-circle {
+    stroke: #c8ccd4;
+    fill: none;
+    transition: all 0.3s ease;
+}
+
+.radio-circle-checked {
+    stroke: #4285f4;
+    fill: none;
+    transition: all 0.3s ease;
+}
+
+.radio-dot {
+    fill: #4285f4;
+    transition: all 0.2s ease;
+}

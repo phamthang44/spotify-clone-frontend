@@ -1,40 +1,28 @@
 import StepHeader from "./StepHeader.jsx";
-import Input from "../Common/Input.jsx";
+import InputSignup from "../Common/InputSignup.jsx";
 import {DatePicker} from "@heroui/react";
 import Button from "../Common/Button.jsx";
 import ShowErrorPart from "../Common/ShowErrorPart.jsx";
 import InputGroup from "../Common/InputGroup.jsx";
 import { Controller, useFormContext } from "react-hook-form";
 import GenderRadioGroup from "../Common/GenderRadioGroup.jsx";
-import {useEffect, useState} from "react";
 
-export default function ProfileStep({step, prev, data, setData, next}) {
-    const [touched, setTouched] = useState(false);
+export default function ProfileStep({step, prev, next}) {
 
     const {
         register,
         control,
         formState: { errors },
-        clearErrors,
-        trigger,
         watch,
+        trigger,
     } = useFormContext();
-
-    const genderValue = watch("gender");
-    const dob = watch("dob");
-    const displayName = watch("name");
 
     const handleNextClick = async () => {
         const isValid = await trigger(["gender", "dob", "name"]);
         if (!isValid) return;
         next();
     };
-
-    useEffect(() => {
-        if (!touched && (genderValue || displayName || dob)) {
-            setTouched(true);
-        }
-    }, [genderValue, displayName, dob, touched]);
+    const genderValue = watch("gender");
 
 
     return (
@@ -46,17 +34,10 @@ export default function ProfileStep({step, prev, data, setData, next}) {
                         Name
                         <span className="absolute block text-sm font-medium text-[#B3B3B3]">This name will appear on your profile</span>
                     </label>
-                    <Input
+                    <InputSignup
                         id="name"
                         type="text"
                         placeholder="Enter your name"
-                        watchValue={data.name}
-                        {...register("name")}
-                        onChange={(e) => {
-                            setData((prev) => ({ ...prev, name: e.target.value }))
-                            clearErrors("name");
-                        }
-                        }
                     />
                     <ShowErrorPart error={errors.name} divClass={"relative my-2"} />
                 </InputGroup>
@@ -80,11 +61,6 @@ export default function ProfileStep({step, prev, data, setData, next}) {
                                 <DatePicker
                                     {...field}
                                     showMonthAndYearPickers={true}
-                                    onChange={(date) => {
-                                        field.onChange(date);
-                                        setData((prev) => ({ ...prev, dob: date }));
-                                        clearErrors("dob");
-                                    }}
                                     value={field.value || null}
                                     isRequired
                                     aria-label="date of birth"
@@ -116,11 +92,7 @@ export default function ProfileStep({step, prev, data, setData, next}) {
                     </label>
                     <GenderRadioGroup
                         register={register}
-                        watchValue={data.gender}
-                        onChange={(value) => {
-                            setData((prev) => ({ ...prev, gender: value }));
-                            clearErrors("gender");
-                        }}
+                        watchValue={genderValue}
                     />
                     <ShowErrorPart error={errors.gender} divClass="relative my-2" />
                 </InputGroup>

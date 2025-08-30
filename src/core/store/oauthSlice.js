@@ -14,7 +14,7 @@ const oauthSignupSlice = createSlice({
             return { ...state, ...action.payload };
         },
         clearOAuthSignupData(state) {
-            return { email: '', name: '', status: '', isExistingUser: false, requiredFields: [] };
+            return { email: '', name: '', requiredFields: [] };
         },
     },
 });
