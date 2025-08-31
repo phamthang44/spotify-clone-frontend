@@ -17,10 +17,17 @@ import {
     PictureInPicture2,
     Maximize2
 } from 'lucide-react';
+import {useSelector} from "react-redux";
 
 const SpotifyUI = () => {
     const [isPlaying, setIsPlaying] = useState(false);
     const [likedSongs, setLikedSongs] = useState(new Set());
+    const [isHomePage, setIsHomePage] = useState(false);
+    const userProfile = useSelector(state => state.userProfile);
+
+    const onClickSetHomePage = () => {
+        setIsHomePage(prevState => !prevState);
+    }
 
     const playlists = [
         { name: "Liked Songs", type: "Playlist", songs: "35 songs", icon: "heart", color: "bg-gradient-to-br from-purple-600 to-blue-600" },
@@ -60,7 +67,7 @@ const SpotifyUI = () => {
         <div className="bg-black text-white h-screen flex flex-col">
             {/* Top Navigation */}
             <header>
-                <Header />
+                <Header userProfile={userProfile} onClickSetHomePage={onClickSetHomePage} isHomePage={isHomePage} />
             </header>
             <div className="flex flex-1 overflow-hidden">
                 {/* Sidebar */}

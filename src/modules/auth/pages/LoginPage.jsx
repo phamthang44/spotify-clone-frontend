@@ -11,8 +11,9 @@ import SpotifyIcon from "../../../core/assets/icons/SpotifyIcon.jsx";
 import { useToast } from '../../../core/contexts/ToastContext.jsx';
 import { useState } from "react";
 import { format } from "../../../core/components/utils/helper.js";
-
-
+import { configUrl } from "../../../core/config/config.js";
+import {setUserProfileInfo} from "../../../core/store/userSlice.js";
+import { userServices } from "../../user/services/userService.js";
 
 
 
@@ -45,25 +46,42 @@ function LoginPage() {
     const [loading, setLoading] = useState(false);
     const handleGoogleLogin = () => {
         const popup = window.open(
-            "http://localhost:8080/api/v1/auth/oauth2/google",
+            configUrl.GOOGLE_OAUTH2_URL,
             "_blank",
             "width=500,height=600"
         );
-        const listener = (event) => {
-            if (event.origin !== "http://localhost:8080") return;
-            console.log(event.data);
+        const listener = async (event) => {
+            if (event.origin !== configUrl.BASE_URL) return;
 
             if (event.data.status === 200 && event.data.message === "Login successful") {
                 dispatch(setCredentials({
                     accessToken: event.data.data.accessToken
                 }))
-                navigate("/");
+                await storeProfileUser();
             }
             window.removeEventListener("message", listener); // remove listener sau khi nhận
+            navigate("/spotify");
         };
 
         window.addEventListener("message", listener);
     };
+
+    const storeProfileUser = async () => {
+        try {
+            const userInfoResponseFetch = await userServices.me();
+            if (userInfoResponseFetch.status === 200) {
+                const user = userInfoResponseFetch.data.data;
+                dispatch(setUserProfileInfo({
+                    ...user,
+                    dateOfBirth: format.formatDateOfBirth(user.dateOfBirth),
+                }));
+            }
+        } catch (err) {
+            console.error("Failed to fetch user profile:", err);
+            addToast({ type: "error", message: "Failed to fetch user profile" });
+        }
+    }
+
     const handleLogin = async (formData, e) => {
         e.preventDefault();
         if (loading) return;
@@ -73,12 +91,13 @@ function LoginPage() {
             if (res.status === 200 && res.data.status === "unverified") {
                 navigate("/verify");
             }
-            dispatch(setCredentials({
-                accessToken: res.accessToken,
-                isAuthenticated: true,
-                isLoading: false,
-            }));
             if (res.status === 200) {
+                dispatch(setCredentials({
+                    accessToken: res.accessToken,
+                    isAuthenticated: true,
+                    isLoading: false,
+                }));
+                await storeProfileUser();
                 addToast.success(res.message, {
                     style: {
                         color: "green",
@@ -86,6 +105,7 @@ function LoginPage() {
                         fontWeight: "600",
                     }
                 });
+                navigate("/spotify")
             }
 
         } catch (err) {

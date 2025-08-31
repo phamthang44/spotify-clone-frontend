@@ -10,6 +10,8 @@ import { useNavigate } from "react-router-dom";
 import {completeSignup, signup} from "../services/authService.js";
 import { useToast } from "../../../core/contexts/ToastContext.jsx";
 import {setCredentials} from "../../../core/store/authSlice.js";
+import { configUrl } from "../../../core/config/config.js";
+
 
 function SignupPage() {
     const [step, setStep] = useState(0);
@@ -58,20 +60,20 @@ function SignupPage() {
 
     const handleGoogleLogin = () => {
         const popup = window.open(
-            "http://localhost:8080/api/v1/auth/oauth2/google",
+            configUrl.GOOGLE_OAUTH2_URL,
             "_blank",
             "width=500,height=600"
         );
 
         const listener = (event) => {
-            if (event.origin !== "http://localhost:8080") return;
+            if (event.origin !== configUrl.BASE_URL) return;
             console.log(event.data);
 
             if (event.data.status === 200 && event.data.message === "Login successful") {
                 dispatch(setCredentials({
                     accessToken: event.data.data.accessToken
                 }))
-                navigate("/");
+                navigate("/spotify");
             }
 
             const { email, name, requiredFields } = event.data.data;

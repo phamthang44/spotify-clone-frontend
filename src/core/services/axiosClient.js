@@ -3,6 +3,9 @@ import {logout, setCredentials} from "../store/authSlice.js";
 import {setVerifyInformation} from "../store/verifySlice.js";
 import {store} from "../store/store.js";
 import toast from "react-hot-toast";
+import {userServices} from "../../modules/user/services/userService.js";
+import {setUserProfileInfo} from "../store/userSlice.js";
+import {format} from "../components/utils/helper.js";
 
 // Tạo instance axios
 const api = axios.create({
@@ -20,7 +23,7 @@ api.interceptors.request.use(
     (config) => {
         const token = store.getState().auth.accessToken; // lấy từ Redux/Zustand
         if (token) {
-            console.log(token);
+            // console.log(token);
             config.headers.Authorization = `Bearer ${token}`;
         }
         return config;
@@ -59,8 +62,18 @@ api.interceptors.response.use(
             try {
                 const res = await refreshApi.post("/users/refresh"); // cookie tự động gửi
                 const newAccessToken = res.data.accessToken;
-
                 store.dispatch(setCredentials({ accessToken: newAccessToken, isAuthenticated: true, isLoading: false }));
+
+                const userInfoResponse = await userServices.me();
+                const user = userInfoResponse.data.data;
+
+                store.dispatch(setUserProfileInfo({
+                    avatarUrl: user.avatarUrl,
+                    displayName: user.displayName,
+                    dateOfBirth: format.formatDateOfBirth(user.dateOfBirth), // nếu cần format
+                    email: user.email,
+                    phone: user.phoneNumber,
+                }));
 
                 originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
                 return api(originalRequest); // retry request gốc
