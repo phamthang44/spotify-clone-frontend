@@ -8,6 +8,9 @@ const protectedRoutes = [
         element: <MainLayout />,
         children: [
             { path: 'spotify', element: <ProtectedRoute><SpotifyUI></SpotifyUI></ProtectedRoute> },
+            { path: 'preferences', element: <ProtectedRoute></ProtectedRoute> },
+            { path: 'user', element: <ProtectedRoute></ProtectedRoute> },
+            { path: 'search', element: <ProtectedRoute></ProtectedRoute> },
         ]
     },
 ]

@@ -4,13 +4,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import {useEffect, useState} from "react";
 import {format} from "../../../core/components/utils/helper.js"
 
-export default function SearchResultDropDown({ results, isSearchDropDown, totalFound }) {
+export default function SearchResultDropDown({ results, isSearchDropDown, totalFound, onClearAll, onClear }) {
 
-    const [searchResults, setSearchResults] = useState(results);
-
-    const handleClearSearchResults = () => {
-        setSearchResults([]);
-    }
 
     return (
         <AnimatePresence>
@@ -29,13 +24,19 @@ export default function SearchResultDropDown({ results, isSearchDropDown, totalF
                     <div className="mt-4 space-y-2 text-white">
                         {results?.length > 0 ? (
                             results.map((r) => (
-                                <SearchResult key={r.data.id} id={r.data.id} title={r.data.title ? r.data.title : r.data.name} resultType={format.formatUppercaseFirstLetter(r.type)} artist={r.data.artistName ? r.data.artistName: r.data.country} />
+                                <SearchResult key={r.data.id}
+                                              id={r.data.id}
+                                              title={r.data.title ? r.data.title : r.data.name}
+                                              resultType={format.formatUppercaseFirstLetter(r.type)}
+                                              artist={r.data.artistName ? r.data.artistName: r.data.country}
+                                              onClear={onClear}
+                                />
                             ))
                         ) : (
                             <p className="text-[#565656] font-montserrat text-2xl">No result found!</p>
                         )}
                     </div>
-                    <Button onClick={handleClearSearchResults} classCustom="px-4 py-1.5 cursor-pointer flex justify-center items-center border border-[#565656] rounded-full hover:border-white hover:scale-103 transition-transform mt-4">
+                    <Button onClick={onClearAll} classCustom="px-4 py-1.5 cursor-pointer flex justify-center items-center border border-[#565656] rounded-full hover:border-white hover:scale-103 transition-transform mt-4">
                         <span className="font-poppins text-sm font-semibold">Clear recent searches</span>
                     </Button>
                 </motion.div>

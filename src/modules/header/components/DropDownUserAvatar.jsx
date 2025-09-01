@@ -3,7 +3,7 @@ import LinkHrefIcon from "../../../core/assets/icons/LinkHrefIcon.jsx";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function DropDownUserAvatar({handleLogout, isDropDownOpening}) {
-    const classLiItem = "flex justify-between items-center p-2 font-poppins text-[15px] hover:bg-[#3e3e3e] group";
+    const classLiItem = "flex justify-between items-center p-2 font-poppins text-[15px] hover:bg-[#3e3e3e] group cursor-pointer";
     const classButton = "hover:underline";
     return (
         <AnimatePresence>
@@ -15,7 +15,7 @@ export default function DropDownUserAvatar({handleLogout, isDropDownOpening}) {
                 className="absolute top-14 right-1 inline-block group text-left bg-[#282828] z-10 w-45 p-1 rounded-lg shadow-lg transition-opacity"
             >
                 <ul>
-                    <li className={classLiItem}>
+                    <li className={classLiItem} onClick={() => {console.log('test')}}>
                         <Button classCustom={classButton}>Account</Button>
                         <span><LinkHrefIcon className="w-4 h-4 fill-[#e9e9e9]" /></span>
                     </li>

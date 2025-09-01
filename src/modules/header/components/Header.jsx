@@ -58,7 +58,7 @@ export default function Header({altText, userProfile, onClickSetHomePage, isHome
 
     return (
         <>
-            <div className="flex items-center justify-center p-2 bg-black">
+            <header className="flex items-center justify-center p-2 bg-black">
                 <div className="flex items-center space-x-4 w-full">
                     <Button classCustom="w-8 h-8 bg-[#121212] rounded-full flex items-center justify-center cursor-pointer mr-auto ml-4">
                         <SpotifyIcon/>
@@ -88,7 +88,7 @@ export default function Header({altText, userProfile, onClickSetHomePage, isHome
                         {isDropdownOpening ? <DropDownUserAvatar handleLogout={handleLogout} isDropDownOpening={isDropdownOpening}/> : ""}
                     </div>
                 </div>
-            </div>
+            </header>
         </>
     );
 }

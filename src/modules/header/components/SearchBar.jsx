@@ -6,9 +6,18 @@ import { forwardRef, useState } from "react";
 import SearchBox from "./SearchBox.jsx"
 import {searchServices} from "../../../core/services/searchService.js";
 import {format} from "../../../core/components/utils/helper.js";
+import {useNavigate} from "react-router-dom";
+import IconBrowseFill from "../../../core/assets/icons/IconBrowseFill.jsx";
 const SearchBar = forwardRef(({onClick, isDropDownSearch}, ref) => {
     const [searchResults, setSearchResults] = useState([]);
     const [totalFounded, setTotalFounded] = useState(0);
+    const navigate = useNavigate();
+    const [isBrowse, setIsBrowse] = useState(false);
+    const handleClickBrowse = () => {
+        navigate("/search");
+        setIsBrowse(true);
+    }
+
     const handleDebounce = async (query) => {
         if (!query) {
             setSearchResults([]); // clear khi user xóa hết input
@@ -21,10 +30,24 @@ const SearchBar = forwardRef(({onClick, isDropDownSearch}, ref) => {
             const totalFound = results.data.data.total;
             if (results.data.data.results.length > 0) {
                 normalizedResults = format.normalizeSearchResults(results.data.data.results);
+            } else if (results.data.data.results.length === 0) {
+                setSearchResults([]);
+                setTotalFounded(0);
             }
             setSearchResults(normalizedResults);
             setTotalFounded(totalFound);
         }
+    };
+
+    const handleClearSearchResults = () => {
+        setSearchResults([])
+        setTotalFounded(0);
+    }
+
+    const handleClearSelectedItem = (id) => {
+        const filteredResults = searchResults.filter(result => result.data.id !== id);
+        setSearchResults(filteredResults);
+        setTotalFounded(filteredResults.length);
     };
 
     return (
@@ -41,9 +64,17 @@ const SearchBar = forwardRef(({onClick, isDropDownSearch}, ref) => {
                     />
                 </div>
                 <div className="absolute top-3 right-15 h-6 w-[1px] bg-[#6f6f6f]"></div>
-                {isDropDownSearch ? <SearchResultDropDown totalFound={totalFounded} results={searchResults} isSearchDropDown={isDropDownSearch}/> : null}
+                {isDropDownSearch ? <SearchResultDropDown onClear={handleClearSelectedItem} totalFound={totalFounded} results={searchResults} isSearchDropDown={isDropDownSearch} onClearAll={handleClearSearchResults}/> : null}
             </div>
-            <Button divClass="absolute right-5 top-1/2 transform -translate-y-1/2 cursor-pointer mt-[2px]" className="w-6 h-6" icon={<IconBrowse className="w-6 h-6 transition-all transition-1s hover:scale-110 fill-[#6f6f6f] hover:fill-white"/>}></Button>
+            <Button
+                divClass="absolute right-5 top-1/2 transform -translate-y-1/2 mt-[2px]"
+                className="w-6 h-6 cursor-pointer"
+                onClick={handleClickBrowse}
+                icon={isBrowse ?
+                    <IconBrowseFill className="w-6 h-6 transition-all transition-1s hover:scale-110 fill-white"/> :
+                    <IconBrowse className="w-6 h-6 transition-all transition-1s hover:scale-110 fill-[#6f6f6f] hover:fill-white"/>
+                }>
+            </Button>
         </div>
     );
 });

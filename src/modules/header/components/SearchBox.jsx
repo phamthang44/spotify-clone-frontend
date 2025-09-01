@@ -8,7 +8,6 @@ export default function SearchBox({ className, placeholder, type, onClick, onDeb
     useEffect(() => {
         if (debouncedQuery) {
             // báo lên cha (SearchBar)
-            console.log("debouncedQuery", debouncedQuery);
             onDebounce?.(debouncedQuery);
         }
     }, [debouncedQuery]);
