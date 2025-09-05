@@ -18,17 +18,13 @@ export default function MainLayout() {
 
     const playlists = [
         { name: "Liked Songs", type: "Playlist", songs: "35 songs", icon: "heart", color: "bg-gradient-to-br from-purple-600 to-blue-600" },
-        { name: "Liked Songs", type: "Playlist", songs: "35 songs", icon: "heart", color: "bg-gradient-to-br from-purple-600 to-blue-600" },
-        { name: "Liked Songs", type: "Playlist", songs: "35 songs", icon: "heart", color: "bg-gradient-to-br from-purple-600 to-blue-600" },
-        { name: "Liked Songs", type: "Playlist", songs: "35 songs", icon: "heart", color: "bg-gradient-to-br from-purple-600 to-blue-600" },
-        { name: "Liked Songs", type: "Playlist", songs: "35 songs", icon: "heart", color: "bg-gradient-to-br from-purple-600 to-blue-600" },
-        { name: "Vietnamese playlist", type: "Playlist", user: "Thăng", image: "/api/placeholder/40/40" },
-        { name: "Café Playlist", type: "Playlist", user: "uDiscover Vietnam", verified: true, image: "/api/placeholder/40/40" },
-        { name: "🌺", type: "Playlist", user: "Muối Muối", image: "/api/placeholder/40/40" },
-        { name: "My Playlist #4", type: "Playlist", user: "Thăng", image: "/api/placeholder/40/40" },
-        { name: "Chill songs 🌻", type: "Playlist", user: "Roshia", image: "/api/placeholder/40/40" },
-        { name: "My playlist #2", type: "Playlist", user: "Thăng", image: "/api/placeholder/40/40" },
-        { name: "Ok3i", type: "Playlist", user: "Thăng", image: "/api/placeholder/40/40" }
+        { name: "Vietnamese playlist", type: "Playlist", user: "Thăng", image: "" },
+        { name: "Café Playlist", type: "Playlist", user: "uDiscover Vietnam", verified: true, image: "" },
+        { name: "🌺", type: "Playlist", user: "Muối Muối", image: "" },
+        { name: "My Playlist #4", type: "Playlist", user: "Thăng", image: "" },
+        { name: "Chill songs 🌻", type: "Playlist", user: "Roshia", image: "" },
+        { name: "My playlist #2", type: "Playlist", user: "Thăng", image: "" },
+        { name: "Ok3i", type: "Playlist", user: "Thăng", image: "" }
     ];
 
     const dailyMixes = [
