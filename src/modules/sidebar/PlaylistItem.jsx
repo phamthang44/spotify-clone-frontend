@@ -20,7 +20,7 @@ export default function PlaylistItem({className, onPlay, playlist, isCollapsed})
                         <Heart className="w-6 h-6 text-white fill-current"/>
                     </div>
                 ) : (
-                    <img src={playlist.image ? playlist.image : playlistDefaultImage} alt={playlist.name} className="w-12 h-12 rounded"/>
+                    <img src={playlist.coverImageUrl ? playlist.coverImageUrl : playlistDefaultImage} alt={playlist.name} className="w-12 h-12 rounded"/>
                 )}
                 <AnimatePresence>
                     {isHover && (
@@ -66,9 +66,9 @@ export default function PlaylistItem({className, onPlay, playlist, isCollapsed})
                         exit={{opacity: 0, x: -10}}
                         className="flex-1 min-w-0"
                     >
-                        <p className="font-medium truncate">{playlist.name}</p>
+                        <p className="font-medium truncate">{playlist.title}</p>
                         <p className="text-sm text-gray-400 truncate">
-                            {playlist.type} • {playlist.user || playlist.songs}
+                            {playlist.type || 'Playlist'} • {playlist.ownerName || playlist.songs}
                         </p>
                     </motion.div>
                 )}

@@ -3,29 +3,27 @@ import Header from "../../modules/header/components/Header.jsx";
 import Sidebar from "../../modules/sidebar/Sidebar.jsx";
 import React from "react";
 import BottomPlayer from "../../modules/bottom-player/components/BottomPlayer.jsx";
-import {useState} from "react";
+import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { fetchPlaylists } from "../../modules/playlist/playlistsThunks.js";
 
 export default function MainLayout() {
     const [isPlaying, setIsPlaying] = useState(false);
     const [likedSongs, setLikedSongs] = useState(new Set());
     const [isHomePage, setIsHomePage] = useState(false);
     const userProfile = useSelector(state => state.userProfile);
+    const dispatch = useDispatch();
 
     const onClickSetHomePage = () => {
         setIsHomePage(prevState => !prevState);
     }
 
-    const playlists = [
-        { name: "Liked Songs", type: "Playlist", songs: "35 songs", icon: "heart", color: "bg-gradient-to-br from-purple-600 to-blue-600" },
-        { name: "Vietnamese playlist", type: "Playlist", user: "Thăng", image: "" },
-        { name: "Café Playlist", type: "Playlist", user: "uDiscover Vietnam", verified: true, image: "" },
-        { name: "🌺", type: "Playlist", user: "Muối Muối", image: "" },
-        { name: "My Playlist #4", type: "Playlist", user: "Thăng", image: "" },
-        { name: "Chill songs 🌻", type: "Playlist", user: "Roshia", image: "" },
-        { name: "My playlist #2", type: "Playlist", user: "Thăng", image: "" },
-        { name: "Ok3i", type: "Playlist", user: "Thăng", image: "" }
-    ];
+
+    useEffect(() => {
+        dispatch(fetchPlaylists());
+    }, [dispatch]);
+
 
     const dailyMixes = [
         { title: "Daily Mix 1", description: "IVE, BLACKPINK, ILLIT and more", image: "/api/placeholder/160/160", number: "01" },
@@ -55,7 +53,7 @@ export default function MainLayout() {
             <Header userProfile={userProfile} onClickSetHomePage={onClickSetHomePage} isHomePage={isHomePage} />
             <main className="flex flex-1 overflow-hidden">
                 {/* Sidebar */}
-                <Sidebar playlists={playlists}/>
+                <Sidebar />
                 <Outlet />
             </main>
             {/* Bottom Player */}

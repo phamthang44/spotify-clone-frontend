@@ -9,6 +9,8 @@ export default function AuthLayout() {
     useEffect(() => {
         if (isAuthenticated) {
             navigate("/spotify");
+        } else {
+            navigate("/login");
         }
     }, [isAuthenticated, navigate]);
 

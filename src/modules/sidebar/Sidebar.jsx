@@ -1,18 +1,37 @@
 import {Heart, MoreHorizontal, Plus} from "lucide-react";
-import {useState} from "react";
+import {useState, useRef} from "react";
 import Button from "../../core/components/Button.jsx";
 import {motion, AnimatePresence} from "framer-motion";
 import IconCollapseLibrary from "../../core/assets/icons/IconCollapseLibrary.jsx";
 import IconExpandLibrary from "../../core/assets/icons/IconExpandLibrary.jsx";
 import SidebarSearch from "./SidebarSearch.jsx";
 import PlaylistItem from "./PlaylistItem.jsx";
+import CreatePlaylistModal from "./CreatePlaylistModal.jsx";
+import {playlistService} from "../playlist/PlaylistService.js"
+import { useSelector, useDispatch } from "react-redux";
+import {setPlaylistData} from "../playlist/playlistSlice.js";
+import {fetchNewPlaylist} from "../playlist/playlistThunks.js";
 
 
-export default function Sidebar({playlists}) {
+export default function Sidebar() {
     const [isCollapsed, setIsCollapsed] = useState(false);
     const [isHovering, setHovering] = useState(false);
+    const [open, setOpen] = useState(false);
+    const { items, loading, error } = useSelector((state) => state.playlists);
+    const dispatch = useDispatch();
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
 
+    const buttonRef = useRef(null);
 
+    const handleCreatePlaylist = async () => {
+        try {
+            const newPlaylist = await playlistService.createNewPlaylist();
+            dispatch(fetchNewPlaylist(newPlaylist));
+        } catch (error) {
+            console.error(error);
+        }
+    }
 
     return (
         <aside className="h-full">
@@ -75,7 +94,15 @@ export default function Sidebar({playlists}) {
                         </div>
                         {!isCollapsed && (
                             <>
-                                <Plus className="w-5 h-5 text-gray-400 hover:text-white cursor-pointer"/>
+                                <Button
+                                    classCustom="w-25 flex items-center justify-center rounded-full bg-[#1f1f1f] p-2 hover:bg-[#252525] group cursor-pointer gap-1 px-2 cursor-pointer"
+                                    onClick={handleOpen}
+                                    ref={buttonRef}
+                                >
+                                    <Plus className="w-5 h-5 text-[#b3b3b3]"/>
+                                    <span className="text-[#fcfefe] inline-block font-poppins font-semibold">create</span>
+                                </Button>
+                                <CreatePlaylistModal open={open} onClose={handleClose} anchorRef={buttonRef} onCreatePlaylist={handleCreatePlaylist} />
                                 <MoreHorizontal className="w-5 h-5 text-gray-400 hover:text-white cursor-pointer"/>
                             </>
                         )}
@@ -85,7 +112,7 @@ export default function Sidebar({playlists}) {
 
                 {/* Playlists */}
                 <div className="space-y-3 overflow-y-auto scrollbar-hide">
-                    {playlists.map((playlist, index) => (
+                    {items.map((playlist, index) => (
                         <PlaylistItem className={
                             `flex items-center hover:bg-[#1f1f1f] p-2 rounded cursor-pointer relative ` +
                             (!isCollapsed ? "space-x-3" : "")

@@ -25,6 +25,7 @@ function AuthChecker({ children }) {
             try {
                 if (!isVerifying) {
                     const res = await refreshToken();
+
                     dispatch(setCredentials({
                         accessToken: res.data.accessToken,
                         isAuthenticated: true,
@@ -43,20 +44,19 @@ function AuthChecker({ children }) {
 
                 }
             } catch (err) {
-                if (err.response?.data?.status === 401) {
-                    if (err.response?.data?.message.includes("No refresh token provided")) {
-                        navigate("/login");
-                    } else if (err.response?.data?.message.includes("Invalid or revoked refresh token")) {
-                        navigate("/login");
-                    } else if (err.response?.data?.message.includes("verification")) {
-                        navigate("/verify");
-                    }
-                } else if (err.response?.data?.status === 500) {
+                const status = err.response?.status;
+                const msg = err.response?.data?.message;
+
+                if (status === 401 && msg?.includes("refresh token")) {
+                    dispatch(logout());
                     navigate("/login");
-                } else if (err.response?.data?.status === 403 && err.response?.data?.message.includes("not verified")) {
-                    navigate("/verify")
+                } else if (status === 403 && msg?.includes("not verified")) {
+                    navigate("/verify");
+                } else {
+                    // ❌ không logout bừa, chỉ log warning
+                    console.error("Unexpected refresh error:", err);
                 }
-                dispatch(logout());
+
             } finally {
                 setInitDone(true); // đã thử refresh xong 1 lần
             }
@@ -68,10 +68,8 @@ function AuthChecker({ children }) {
         if (!accessToken && !calledRef.current) {
             calledRef.current = true;
             initAuth();
-        } else {
-            setInitDone(true);
         }
-    }, [accessToken, dispatch, isAuthPage]);
+    }, [accessToken, dispatch, isAuthPage, isVerifying, navigate]);
 
     // Hiển thị loading cho đến khi check xong refresh
     if (!initDone) {
