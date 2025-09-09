@@ -14,6 +14,7 @@ import { useToast } from '../../../core/contexts/ToastContext.jsx';
 import defaultAvatar from "../../../assets/images/default_avatar.jpg";
 import useOnClickOutside from "../../../core/hooks/useOnClickOutside.js";
 import HomeIcon from "../../../core/assets/icons/HomeIcon.jsx";
+import {useNavigate} from "react-router-dom";
 export default function Header({altText, userProfile, onClickSetHomePage, isHomePage}) {
     const dispatch = useDispatch();
     const {addToast} = useToast();
@@ -22,6 +23,8 @@ export default function Header({altText, userProfile, onClickSetHomePage, isHome
 
     const [isSearchDropdownOpening, setSearchDropdownOpening] = useState(false);
     const searchBarRef = useRef(null);
+
+    const navigate = useNavigate();
 
     useOnClickOutside([dropDownRef], () => setDropdownOpening(false));
     useOnClickOutside([searchBarRef], () => setSearchDropdownOpening(false));
@@ -60,7 +63,9 @@ export default function Header({altText, userProfile, onClickSetHomePage, isHome
         <>
             <header className="flex items-center justify-center p-2 bg-black">
                 <div className="flex items-center space-x-4 w-full">
-                    <Button classCustom="w-8 h-8 bg-[#121212] rounded-full flex items-center justify-center cursor-pointer mr-auto ml-4">
+                    <Button classCustom="w-8 h-8 bg-[#121212] rounded-full flex items-center justify-center cursor-pointer mr-auto ml-4" onClick={() => {
+                        navigate('/spotify')
+                    }}>
                         <SpotifyIcon/>
                     </Button>
                     <div className="flex space-x-2 mx-auto w-160 just-center items-center">

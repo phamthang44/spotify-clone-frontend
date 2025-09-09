@@ -15,6 +15,13 @@ export const playlistService = {
     loadPlaylists: async () => {
         const res  = await api.get(`/playlists`);
         return res.data;
+    },
+    updatePlaylist: async (playlistId) => {
+        const res = await api.put(`/playlists/${playlistId}`);
+        return res.data;
+    },
+    deletePlaylist: async (id) => {
+        return await api.delete(`/playlists/${id}`);
     }
 }
 

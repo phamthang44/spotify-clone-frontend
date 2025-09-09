@@ -11,6 +11,7 @@ import {playlistService} from "../playlist/PlaylistService.js"
 import { useSelector, useDispatch } from "react-redux";
 import {setPlaylistData} from "../playlist/playlistSlice.js";
 import {fetchNewPlaylist} from "../playlist/playlistThunks.js";
+import {fetchPlaylists} from "../playlist/playlistsThunks.js";
 
 
 export default function Sidebar() {
@@ -27,10 +28,24 @@ export default function Sidebar() {
     const handleCreatePlaylist = async () => {
         try {
             const newPlaylist = await playlistService.createNewPlaylist();
-            dispatch(fetchNewPlaylist(newPlaylist));
+            if (newPlaylist.status === 201) {
+                dispatch(fetchPlaylists());
+            }
         } catch (error) {
             console.error(error);
         }
+    }
+
+    const handleEditPlaylist = async () => {
+        const updatedPlaylist = playlistService;
+    }
+
+    const handleDeletePlaylist = async (id) => {
+        const response = await playlistService.deletePlaylist(id);
+        if (response.status === 204) {
+            dispatch(fetchPlaylists());
+        }
+
     }
 
     return (
@@ -43,7 +58,7 @@ export default function Sidebar() {
                 onMouseLeave={() => setHovering(false)}
             >
                 {/* Header */}
-                <div className={`mb-5 ${isCollapsed ? "px-4" : ""}flex items-center justify-between`}>
+                <div className={`mb-5 ${isCollapsed ? "px-4 mt-4 " : " flex items-center justify-between"}`}>
                     <div className="flex items-center space-x-3 justify-center relative">
                         <AnimatePresence mode="wait">
                             {(isHovering || isCollapsed) && (
@@ -116,7 +131,7 @@ export default function Sidebar() {
                         <PlaylistItem className={
                             `flex items-center hover:bg-[#1f1f1f] p-2 rounded cursor-pointer relative ` +
                             (!isCollapsed ? "space-x-3" : "")
-                        } playlist={playlist} key={index} />
+                        } playlist={playlist} key={index} onDeletePlaylist={handleDeletePlaylist} />
                     ))}
                 </div>
             </motion.div>

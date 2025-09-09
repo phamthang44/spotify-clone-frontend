@@ -1,18 +1,27 @@
 import Button from "../../core/components/Button.jsx";
-import {Heart, PlayIcon} from "lucide-react";
+import {Heart, MoreHorizontal, PlayIcon} from "lucide-react";
 import {AnimatePresence, motion} from "framer-motion";
-import {useState} from "react";
+import {useState, useRef} from "react";
 import playlistDefaultImage from "../../assets/images/default-playlist.png";
+import MoreOptionsModal from "./MoreOptionsModal.jsx";
 
 
-export default function PlaylistItem({className, onPlay, playlist, isCollapsed}) {
+export default function PlaylistItem({className, onPlay, playlist, isCollapsed, onDeletePlaylist}) {
     const [isHover, setIsHover] = useState(false);
+    const moreRef = useRef(null);
+    const [open, setOpen] = useState(false);
+
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
+
+
 
     return (
         <div
             className={className}
             onMouseEnter={() => setIsHover(true)}
             onMouseLeave={() => setIsHover(false)}
+            ref={moreRef}
         >
             <div className="relative w-12 h-12">
                 {playlist.icon === "heart" ? (
@@ -73,6 +82,10 @@ export default function PlaylistItem({className, onPlay, playlist, isCollapsed})
                     </motion.div>
                 )}
             </AnimatePresence>
+            <Button onClick={handleOpen}>
+                <MoreHorizontal className="w-5 h-5 text-gray-400 hover:text-white cursor-pointer"/>
+            </Button>
+            <MoreOptionsModal anchorRef={moreRef} open={open} onClose={handleClose} onDeletePlaylist={onDeletePlaylist} playlist={playlist}/>
         </div>
     );
 }
