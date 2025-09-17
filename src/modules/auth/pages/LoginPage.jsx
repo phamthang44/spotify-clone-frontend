@@ -14,6 +14,7 @@ import { format } from "../../../core/components/utils/helper.js";
 import { configUrl } from "../../../core/config/config.js";
 import {setUserProfileInfo} from "../../../core/store/userSlice.js";
 import { userServices } from "../../user/services/userService.js";
+import {setOAuthSignupData} from "../../../core/store/oauthSlice.js";
 
 
 
@@ -52,15 +53,18 @@ function LoginPage() {
         );
         const listener = async (event) => {
             if (event.origin !== configUrl.BASE_URL) return;
-
             if (event.data.status === 200 && event.data.message === "Login successful") {
                 dispatch(setCredentials({
                     accessToken: event.data.data.accessToken
                 }))
                 await storeProfileUser();
+                navigate("/spotify");
+            } else if (event.data.status === 200 && event.data.message === "User found, but additional info required") {
+                console.log("➡️ Navigate to signup with data:", event.data.data);
+                dispatch(setOAuthSignupData(event.data.data))
+                navigate("/signup");
             }
             window.removeEventListener("message", listener); // remove listener sau khi nhận
-            navigate("/spotify");
         };
 
         window.addEventListener("message", listener);

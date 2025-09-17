@@ -7,6 +7,9 @@ export default function AuthLayout() {
     const navigate = useNavigate();
 
     useEffect(() => {
+        const allowedRoutes = ["/signup"];
+        if (allowedRoutes.includes(window.location.pathname)) return;
+
         if (isAuthenticated) {
             navigate("/spotify");
         } else {

@@ -44,6 +44,7 @@ function AuthChecker({ children }) {
 
                 }
             } catch (err) {
+                console.log(err);
                 const status = err.response?.status;
                 const msg = err.response?.data?.message;
 
@@ -52,7 +53,10 @@ function AuthChecker({ children }) {
                     navigate("/login");
                 } else if (status === 403 && msg?.includes("not verified")) {
                     navigate("/verify");
-                } else {
+                } else if (status === 200) {
+                    console.log(err)
+                }
+                else {
                     // ❌ không logout bừa, chỉ log warning
                     console.error("Unexpected refresh error:", err);
                 }

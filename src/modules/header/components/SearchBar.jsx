@@ -44,8 +44,12 @@ const SearchBar = forwardRef(({onClick, isDropDownSearch}, ref) => {
         setTotalFounded(0);
     }
 
-    const handleClearSelectedItem = (id) => {
-        const filteredResults = searchResults.filter(result => result.data.id !== id);
+    const handleClearSelectedItem = (id, type) => {
+
+        const filteredResults = searchResults.filter(
+            result => !(result.data.id === id && result.type === type)
+        );
+
         setSearchResults(filteredResults);
         setTotalFounded(filteredResults.length);
     };

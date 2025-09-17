@@ -1,8 +1,8 @@
 import SpotifyIcon from "../../../core/assets/icons/SpotifyIcon.jsx";
 import SignupForm from "../components/Signup/SignupForm.jsx";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import OAuthSection from "../components/Common/OAuthSection.jsx";
-import {Link} from "react-router-dom";
+import {Link, useLocation} from "react-router-dom";
 import {setOAuthSignupData, clearOAuthSignupData} from "../../../core/store/oauthSlice.js";
 import {useDispatch, useSelector} from "react-redux";
 import ProgressBar from "../components/Common/ProgressBar.jsx";
@@ -15,10 +15,12 @@ import { configUrl } from "../../../core/config/config.js";
 
 function SignupPage() {
     const [step, setStep] = useState(0);
+
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const addToast = useToast();
     const oauthData = useSelector(state => state.oauthSignup);
+
     const handleLocalSignup = async (data) => {
         const timeFormat = data?.dob.toISOString().split("T")[0]
         const payload = {
@@ -76,8 +78,8 @@ function SignupPage() {
                 navigate("/spotify");
             }
 
-            const { email, name, requiredFields } = event.data.data;
-            dispatch(setOAuthSignupData({ email, name, requiredFields }));
+            const { email, name, status, isExistingUser, requiredFields } = event.data.data;
+            dispatch(setOAuthSignupData({ email, name, status, isExistingUser, requiredFields }));
 
             if (email) {
                 console.log(email);

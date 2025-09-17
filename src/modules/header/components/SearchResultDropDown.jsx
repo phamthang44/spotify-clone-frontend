@@ -24,10 +24,11 @@ export default function SearchResultDropDown({ results, isSearchDropDown, totalF
                     <div className="mt-4 space-y-2 text-white">
                         {results?.length > 0 ? (
                             results.map((r) => (
-                                <SearchResult key={r.data.id}
+                                <SearchResult key={`${r.type}-${r.data.id}`}
                                               id={r.data.id}
                                               title={r.data.title ? r.data.title : r.data.name}
                                               resultType={format.formatUppercaseFirstLetter(r.type)}
+                                              itemType={r.type}
                                               artist={r.data.artistName ? r.data.artistName: r.data.country}
                                               onClear={onClear}
                                 />

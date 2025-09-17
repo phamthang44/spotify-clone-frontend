@@ -7,6 +7,8 @@ const oauthSignupSlice = createSlice({
     initialState: {
         email: '',
         name: '',
+        status: '',
+        isExistingUser: false,
         requiredFields: [],
     },
     reducers: {
@@ -14,7 +16,13 @@ const oauthSignupSlice = createSlice({
             return { ...state, ...action.payload };
         },
         clearOAuthSignupData(state) {
-            return { email: '', name: '', requiredFields: [] };
+            return {
+                email: '',
+                name: '',
+                status: '',
+                isExistingUser: false,
+                requiredFields: [],
+            };
         },
     },
 });

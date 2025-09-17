@@ -9,8 +9,6 @@ import PlaylistItem from "./PlaylistItem.jsx";
 import CreatePlaylistModal from "./CreatePlaylistModal.jsx";
 import {playlistService} from "../playlist/PlaylistService.js"
 import { useSelector, useDispatch } from "react-redux";
-import {setPlaylistData} from "../playlist/playlistSlice.js";
-import {fetchNewPlaylist} from "../playlist/playlistThunks.js";
 import {fetchPlaylists} from "../playlist/playlistsThunks.js";
 
 
@@ -36,9 +34,9 @@ export default function Sidebar() {
         }
     }
 
-    const handleEditPlaylist = async () => {
-        const updatedPlaylist = playlistService;
-    }
+    // const handleEditPlaylist = async () => {
+    //     const updatedPlaylist = playlistService;
+    // }
 
     const handleDeletePlaylist = async (id) => {
         const response = await playlistService.deletePlaylist(id);
