@@ -81,8 +81,7 @@ function LoginPage() {
                 }));
             }
         } catch (err) {
-            console.error("Failed to fetch user profile:", err);
-            addToast({ type: "error", message: "Failed to fetch user profile" });
+            console.log(err)
         }
     }
 
@@ -92,16 +91,18 @@ function LoginPage() {
         setLoading(true);
         try {
             const res = await authService.login(formData);
-            if (res.status === 200 && res.data.status === "unverified") {
+            if (res.status === 403 && res.data.status === "unverified") {
                 navigate("/verify");
             }
+            console.log(res)
             if (res.status === 200) {
                 dispatch(setCredentials({
-                    accessToken: res.accessToken,
+                    accessToken: res.data.accessToken,
                     isAuthenticated: true,
                     isLoading: false,
                 }));
                 await storeProfileUser();
+
                 addToast.success(res.message, {
                     style: {
                         color: "green",
@@ -111,8 +112,8 @@ function LoginPage() {
                 });
                 navigate("/spotify")
             }
-
         } catch (err) {
+            console.log(err)
             const data = err.response.data;
             if (data.status === 401) {
                 addToast.error(format.formatMessageBadCredentials(data.message), {
@@ -138,6 +139,9 @@ function LoginPage() {
                         fontWeight: "600",
                     }
                 })
+            } else if (data.status === 403) {
+                navigate("/verify")
+                //TODO:
             }
         } finally {
             setLoading(false);

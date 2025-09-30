@@ -37,7 +37,10 @@ api.interceptors.response.use(
     async (error) => {
         const originalRequest = error.config;
         if (import.meta.env.MODE === "development") {
-            if (error.response.status === 403 && error.response.data.message.includes("Email not verified")) {
+            if (error.response.status === 403) {
+                console.log(error.response);
+            }
+            if (error.response.status === 403 && error?.response?.data?.message.includes("Email not verified")) {
                 const parts = error.response.data.message.split(": ");
                 const email = parts[1] || null;
                 store.dispatch(setVerifyInformation({
@@ -82,8 +85,9 @@ api.interceptors.response.use(
                 if (!originalRequest._notified) {
                     originalRequest._notified = true;
                     // dùng toast hoặc alert
-                    if (err.status === 403) {
+                    if (err.status === 403 && err.message.includes("Email not verified")) {
                         //toast.error("Session has been expired. Please login again.");
+                        console.log(err);
                     }
                 }
                 toast.error("Session expired. Please login again.");

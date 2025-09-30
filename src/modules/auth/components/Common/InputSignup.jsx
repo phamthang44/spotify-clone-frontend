@@ -19,7 +19,7 @@ export default function InputSignup({id, placeholder, type, oauthSignup}) {
           rounded-sm w-full
           ${errors[id] ? "border-[#df2a3c] focus:outline-[#ed2c3f]" : watchValue ? "focus:outline-green-500" :"focus:outline-white"}`}
             placeholder={placeholder}
-            autoComplete="new-password"
+            autoComplete="off"
         />
         </>
     );

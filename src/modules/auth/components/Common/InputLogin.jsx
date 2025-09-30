@@ -9,6 +9,7 @@ export default function InputLogin({error, register, id, type, placeholder}) {
                 id={id}
                 type={type}
                 placeholder={placeholder}
+                autoComplete="off"
                 {...register}
             />
         </>

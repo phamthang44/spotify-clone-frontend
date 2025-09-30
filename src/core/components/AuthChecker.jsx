@@ -52,6 +52,7 @@ function AuthChecker({ children }) {
                     dispatch(logout());
                     navigate("/login");
                 } else if (status === 403 && msg?.includes("not verified")) {
+                    console.log(msg)
                     navigate("/verify");
                 } else if (status === 200) {
                     console.log(err)

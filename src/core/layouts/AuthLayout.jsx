@@ -7,7 +7,7 @@ export default function AuthLayout() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        const allowedRoutes = ["/signup"];
+        const allowedRoutes = ["/signup", "/login", "/verify"];
         if (allowedRoutes.includes(window.location.pathname)) return;
 
         if (isAuthenticated) {
@@ -19,7 +19,7 @@ export default function AuthLayout() {
 
     return (
         <div className="min-h-screen flex flex-col">
-            <div className="h-full flex-1 flex flex-col items-center justify-center bg-gradient-to-b from-[#292929] to-black">
+            <div className="h-screen flex flex-col items-center justify-center bg-gradient-to-b from-[#292929] to-black">
                 <Outlet />
             </div>
         </div>
